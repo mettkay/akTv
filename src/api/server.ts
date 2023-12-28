@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://www.4kvm.net';
+axios.defaults.baseURL = 'https://www.4kvm.org';
 
 interface FcResponse<T> {
   errno: string;

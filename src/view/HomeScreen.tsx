@@ -1,10 +1,4 @@
-import {
-  NativeSyntheticEvent,
-  StyleSheet,
-  TextInput,
-  TextInputSubmitEditingEventData,
-  View,
-} from 'react-native';
+import {StyleSheet, TextInput, View, Text} from 'react-native';
 import React, {Component} from 'react';
 import {api} from '../api/index';
 import * as cheerio from 'cheerio';
@@ -30,13 +24,17 @@ export default class HomeScreen extends Component<PropsType, StateType> {
     this.state = {keyword: '', dataList: []};
   }
 
-  onSubmit = async (
-    event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
-  ) => {
-    const {text} = event.nativeEvent;
+  onChangeText = (text: string) => {
     this.setState({keyword: text});
+  };
 
-    const [e, r] = await api.getMovieListByText(text);
+  onSubmit = async () => {
+    console.log(
+      '%c 🍦 this.state.keyword: ',
+      'font-size:20px;background-color: #ED9EC7;color:#fff;',
+      this.state.keyword,
+    );
+    const [e, r] = await api.getMovieListByText(this.state.keyword);
     if (!e && r) {
       const $ = cheerio.load(r as string);
       const resultList = $('.result-item');
@@ -85,10 +83,13 @@ export default class HomeScreen extends Component<PropsType, StateType> {
         <TextInput
           placeholder="输入电影名"
           style={styles.input}
-          onSubmitEditing={text => this.onSubmit(text)}
+          onChangeText={text => this.onChangeText(text)}
+          onSubmitEditing={() => this.onSubmit()}
         />
         {dataList.map(item => (
-          <View key={item.name}>{item.name}</View>
+          <View key={item.name}>
+            <Text>{item.name}</Text>
+          </View>
         ))}
       </View>
     );
