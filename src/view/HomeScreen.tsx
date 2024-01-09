@@ -1,7 +1,15 @@
-import {StyleSheet, TextInput, View, Text} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  Image,
+  ScrollView,
+} from 'react-native';
 import React, {Component} from 'react';
 import {api} from '../api/index';
 import * as cheerio from 'cheerio';
+import {WebView} from 'react-native-webview';
 
 interface StateType {
   keyword: string;
@@ -80,17 +88,36 @@ export default class HomeScreen extends Component<PropsType, StateType> {
     const {dataList} = this.state;
     return (
       <View style={styles.container}>
+        <WebView
+          source={{
+            uri: 'https://www.juejin.cn',
+          }}
+          style={{
+            flex: 1,
+          }}
+        />
         <TextInput
           placeholder="输入电影名"
           style={styles.input}
           onChangeText={text => this.onChangeText(text)}
           onSubmitEditing={() => this.onSubmit()}
         />
-        {dataList.map(item => (
-          <View key={item.name}>
-            <Text>{item.name}</Text>
+
+        <ScrollView>
+          <View style={styles.list}>
+            {dataList.map(item => (
+              <View key={item.name} style={styles.movie}>
+                <Image
+                  source={{
+                    uri: item.imgUrl,
+                  }}
+                  style={styles.image}
+                />
+                <Text style={styles.title}>{item.name}</Text>
+              </View>
+            ))}
           </View>
-        ))}
+        </ScrollView>
       </View>
     );
   }
@@ -106,5 +133,28 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 20,
     padding: 10,
+  },
+  list: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 100,
+    flexWrap: 'wrap',
+  },
+  movie: {
+    width: '48%',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingTop: 5,
+  },
+  image: {
+    width: '100%',
+    height: 300,
   },
 });
